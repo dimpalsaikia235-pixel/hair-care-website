@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HAIR & CARE BEAUTY SALON</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+
+/* ===== RESET & VARIABLES ===== */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --black:      #0a0908;
+  --black-mid:  #111009;
+  --black-soft: #1a1713;
+  --black-card: #161410;
+  --gold:       #c9a84c;
+  --gold-light: #e2c97e;
+  --gold-dim:   #7a6030;
+  --gold-glow:  rgba(201,168,76,0.15);
+  --white:      #ffffff;
+  --off-white:  #f0ead8;
+  --muted:      #7a7060;
+  --font-serif: 'Cormorant Garamond', serif;
+  --font-sans:  'Jost', sans-serif;
+}
+
+html { scroll-behavior:smooth; }
+body {
+  font-family: var(--font-sans);
+  background: var(--black);
+  color: var(--off-white);
+  overflow-x: hidden;
+}
+
+/* ===== PAGE LOADER ===== */
+#loader {
+  position:fixed; inset:0; z-index:9999;
+  background:var(--black);
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column; gap:1.5rem;
+  transition: opacity 0.7s ease, visibility 0.7s ease;
+}
+#loader.hidden { opacity:0; visibility:hidden; }
+.loader-logo {
+  font-family:var(--font-serif); font-size:2.5rem; font-weight:300;
+  color:var(--gold); letter-spacing:6px;
+  animation: shimmer 1.5s infinite alternate;
+}
+.loader-bar {
+  width:120px; height:1px; background:var(--black-soft); position:relative; overflow:hidden;
+}
+.loader-bar::after {
+  content:''; position:absolute; left:-100%; top:0;
+  width:100%; height:100%; background:var(--gold);
+  animation: loadbar 1.4s ease infinite;
+}
+@keyframes loadbar { to { left:100%; } }
+@keyframes shimmer { from { opacity:0.5; } to { opacity:1; } }
+
+/* ===== CURSOR ===== */
+.cursor {
+  width:8px; height:8px; background:var(--gold);
+  border-radius:50%; position:fixed; pointer-events:none;
+  z-index:9998; transform:translate(-50%,-50%);
+  transition: width 0.2s, height 0.2s, opacity 0.2s;
+}
+.cursor-ring {
+  width:36px; height:36px; border:1px solid rgba(201,168,76,0.5);
+  border-radius:50%; position:fixed; pointer-events:none;
+  z-index:9997; transform:translate(-50%,-50%);
+  transition: transform 0.12s ease, width 0.2s, height 0.2s;
+}
+
+/* ===== NAVBAR ===== */
+nav {
+  position:fixed; top:0; left:0; width:100%;
+  padding:1.6rem 5%;
+  display:flex; justify-content:space-between; align-items:center;
+  z-index:1000; transition:0.5s;
+}
+nav.scrolled {
+  background:rgba(10,9,8,0.95);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(201,168,76,0.12);
+  padding:1.1rem 5%;
+}
+.nav-logo {
+  font-family:var(--font-serif); font-size:1.6rem; font-weight:300;
+  letter-spacing:4px; color:var(--gold); text-decoration:none; line-height:1.2;
+}
+.nav-logo span {
+  display:block; font-size:0.58rem; letter-spacing:6px; color:var(--muted);
+  font-family:var(--font-sans); font-weight:300; text-transform:uppercase;
+}
+.nav-links { display:flex; gap:2.8rem; list-style:none; }
+.nav-links a {
+  text-decoration:none; color:rgba(240,234,216,0.65);
+  font-size:0.7rem; text-transform:uppercase; letter-spacing:3px; transition:color 0.3s;
+}
+.nav-links a:hover { color:var(--gold); }
+.nav-btn {
+  border:1px solid var(--gold); color:var(--gold); text-decoration:none;
+  padding:0.7rem 1.8rem; font-size:0.68rem; letter-spacing:3px;
+  text-transform:uppercase; transition:0.3s;
+}
+.nav-btn:hover { background:var(--gold); color:var(--black); }
+
+/* ===== HERO ===== */
+#home {
+  min-height:100vh;
+  display:grid; grid-template-columns:1fr 1fr;
+  align-items:center; padding:9rem 5% 5rem; gap:5rem;
+  background: var(--black);
+  position:relative; overflow:hidden;
+}
+.hero-bg-glow {
+  position:absolute; width:600px; height:600px; border-radius:50%;
+  background:radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
+  top:-100px; right:-100px; pointer-events:none;
+}
+.hero-line-v {
+  position:absolute; right:50%; top:0; bottom:0;
+  width:1px; background:linear-gradient(to bottom, transparent, rgba(201,168,76,0.1), transparent);
+}
+.hero-eyebrow {
+  display:flex; align-items:center; gap:1rem;
+  font-size:0.65rem; letter-spacing:5px; text-transform:uppercase;
+  color:var(--gold); margin-bottom:1.8rem;
+}
+.hero-eyebrow::before { content:''; width:35px; height:1px; background:var(--gold); }
+.hero-title {
+  font-family:var(--font-serif);
+  font-size:clamp(3.2rem,5.5vw,5.5rem); font-weight:300;
+  line-height:1.05; margin-bottom:1.8rem; color:var(--white);
+}
+.hero-title em { color:var(--gold); font-style:italic; }
+.hero-desc {
+  color:var(--muted); line-height:2; font-size:0.92rem;
+  font-weight:300; max-width:440px; margin-bottom:3rem;
+  border-left:1px solid var(--gold-dim); padding-left:1.5rem;
+}
+.hero-btns { display:flex; gap:1.2rem; flex-wrap:wrap; align-items:center; }
+.btn-gold {
+  background:var(--gold); color:var(--black); text-decoration:none;
+  padding:0.95rem 2.4rem; font-size:0.7rem;
+  text-transform:uppercase; letter-spacing:3px; transition:0.3s;
+  font-weight:500;
+}
+.btn-gold:hover { background:var(--gold-light); }
+.btn-ghost {
+  color:var(--gold); text-decoration:none;
+  font-size:0.7rem; text-transform:uppercase; letter-spacing:3px;
+  display:flex; align-items:center; gap:0.6rem; transition:0.3s;
+}
+.btn-ghost::after { content:'→'; transition:0.3s; }
+.btn-ghost:hover { color:var(--gold-light); }
+.btn-ghost:hover::after { transform:translateX(4px); }
+
+.hero-image { position:relative; }
+.hero-image img {
+  width:100%; height:650px; object-fit:cover; display:block;
+  filter:brightness(0.88) contrast(1.05);
+}
+.hero-image::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(to right, var(--black) 0%, transparent 25%);
+  z-index:1;
+}
+.hero-image::after {
+  content:''; position:absolute;
+  top:-12px; right:-12px; bottom:12px; left:12px;
+  border:1px solid rgba(201,168,76,0.25); z-index:0; pointer-events:none;
+}
+
+/* ===== SECTION DEFAULTS ===== */
+section { padding:7rem 5%; }
+.sec-eyebrow {
+  display:flex; align-items:center; gap:1rem;
+  font-size:0.65rem; letter-spacing:5px; text-transform:uppercase;
+  color:var(--gold); margin-bottom:1rem;
+}
+.sec-eyebrow::before { content:''; width:30px; height:1px; background:var(--gold); }
+.sec-title {
+  font-family:var(--font-serif); font-size:clamp(2.2rem,3.5vw,3.4rem);
+  font-weight:300; line-height:1.15; margin-bottom:1.5rem; color:var(--white);
+}
+.sec-title em { color:var(--gold); font-style:italic; }
+
+/* Reveal */
+.reveal { opacity:0; transform:translateY(30px); transition:opacity 0.8s ease, transform 0.8s ease; }
+.reveal.visible { opacity:1; transform:none; }
+
+/* ===== DIVIDER ===== */
+.gold-divider {
+  display:flex; align-items:center; gap:1.5rem;
+  margin:0 0 5rem;
+}
+.gold-divider::before, .gold-divider::after {
+  content:''; flex:1; height:1px;
+  background:linear-gradient(to right, transparent, var(--gold-dim), transparent);
+}
+.gold-divider span { color:var(--gold); font-size:1rem; }
+
+/* ===== ABOUT ===== */
+#about { background:var(--black-mid); }
+.about-inner { max-width:720px; }
+.about-text {
+  color:var(--muted); line-height:2; font-size:0.93rem;
+  font-weight:300; margin-bottom:1.2rem;
+}
+
+/* ===== SERVICES ===== */
+#services { background:var(--black); }
+.services-intro { max-width:580px; margin-bottom:5rem; }
+.services-intro p { color:var(--muted); line-height:1.9; font-size:0.92rem; font-weight:300; }
+
+.cat-block { margin-bottom:4rem; }
+.cat-label {
+  font-size:0.65rem; letter-spacing:5px; text-transform:uppercase;
+  color:var(--gold); margin-bottom:1.5rem;
+  display:flex; align-items:center; gap:1rem; padding-bottom:1rem;
+  border-bottom:1px solid rgba(201,168,76,0.15);
+}
+.cat-label::before { content:''; width:20px; height:1px; background:var(--gold); }
+
+.service-cards {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(180px,1fr));
+  gap:1px;
+  background:rgba(201,168,76,0.08);
+}
+.svc {
+  background:var(--black-card); padding:2rem 1.6rem;
+  display:flex; flex-direction:column; gap:0.8rem;
+  transition:0.35s; cursor:default; position:relative; overflow:hidden;
+}
+.svc::before {
+  content:''; position:absolute; bottom:0; left:0; right:0;
+  height:1px; background:var(--gold); transform:scaleX(0);
+  transition:transform 0.35s ease; transform-origin:left;
+}
+.svc:hover { background:#1e1b14; }
+.svc:hover::before { transform:scaleX(1); }
+.svc-icon { font-size:1.3rem; opacity:0.8; }
+.svc-name {
+  font-family:var(--font-serif); font-size:1.1rem;
+  font-weight:300; color:var(--off-white); line-height:1.2;
+}
+.svc:hover .svc-name { color:var(--gold-light); }
+.svc-line {
+  width:20px; height:1px; background:var(--gold-dim); margin-top:auto;
+  transition:width 0.3s ease;
+}
+.svc:hover .svc-line { width:40px; background:var(--gold); }
+
+/* ===== GALLERY ===== */
+#gallery { background:var(--black-mid); text-align:center; }
+.gallery-grid {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  grid-template-rows:auto auto;
+  gap:2px; margin-top:3.5rem;
+  background:rgba(201,168,76,0.06);
+}
+.gallery-slot {
+  background:var(--black-card); min-height:220px;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--gold-dim); font-size:0.65rem; letter-spacing:4px;
+  text-transform:uppercase; position:relative; overflow:hidden;
+  transition:0.4s;
+}
+.gallery-slot:hover { background:#1c1a12; }
+.gallery-slot::after {
+  content:''; position:absolute; inset:0;
+  border:1px solid rgba(201,168,76,0); transition:0.4s;
+}
+.gallery-slot:hover::after { border-color:rgba(201,168,76,0.2); }
+.gallery-slot.large { grid-column:span 2; grid-row:span 2; min-height:444px; }
+.gallery-slot img { width:100%; height:100%; object-fit:cover; display:block; }
+.gallery-note { margin-top:2rem; font-size:0.7rem; color:var(--muted); letter-spacing:2px; }
+
+/* ===== BOOKING ===== */
+#booking { background:var(--black); }
+.booking-grid { display:grid; grid-template-columns:1fr 1fr; gap:6rem; align-items:start; }
+.booking-info p { color:var(--muted); line-height:1.9; font-size:0.92rem; font-weight:300; margin-bottom:2.5rem; }
+.hours-block { margin-top:2.5rem; }
+.hours-label {
+  font-size:0.65rem; letter-spacing:4px; text-transform:uppercase;
+  color:var(--gold); margin-bottom:1rem;
+}
+.hours-row {
+  font-family:var(--font-serif); font-size:1rem; color:var(--off-white);
+  padding:0.7rem 0; border-bottom:1px solid rgba(201,168,76,0.1);
+}
+.map-wrap { margin-top:2.5rem; overflow:hidden; border:1px solid rgba(201,168,76,0.15); }
+.map-wrap iframe { width:100%; height:260px; border:none; display:block; filter:grayscale(0.5) invert(0.9) hue-rotate(180deg); opacity:0.85; }
+
+.booking-form { display:flex; flex-direction:column; gap:1.4rem; }
+.form-group { display:flex; flex-direction:column; gap:0.5rem; }
+.form-group label {
+  font-size:0.62rem; letter-spacing:3px; text-transform:uppercase; color:var(--gold);
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background:transparent; border:none;
+  border-bottom:1px solid rgba(201,168,76,0.2);
+  padding:0.8rem 0; font-family:var(--font-sans); font-size:0.9rem;
+  color:var(--off-white); outline:none; transition:border-color 0.3s;
+  appearance:none;
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder { color:var(--muted); }
+.form-group select option { background:var(--black-soft); color:var(--off-white); }
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus { border-color:var(--gold); }
+.form-group textarea { resize:vertical; min-height:90px; }
+.submit-btn {
+  background:var(--gold); color:var(--black); border:none;
+  padding:1rem 2.8rem; font-family:var(--font-sans);
+  font-size:0.7rem; letter-spacing:3px; text-transform:uppercase;
+  cursor:pointer; transition:0.3s; align-self:flex-start; font-weight:500;
+}
+.submit-btn:hover { background:var(--gold-light); }
+
+/* ===== TESTIMONIALS ===== */
+#testimonials { background:var(--black-mid); }
+.testi-grid {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:1px; margin-top:4rem; background:rgba(201,168,76,0.06);
+}
+.testi-card {
+  background:var(--black-card); padding:2.5rem 2rem;
+  transition:0.3s;
+}
+.testi-card:hover { background:#1a1810; }
+.testi-stars { color:var(--gold); font-size:0.8rem; letter-spacing:3px; margin-bottom:1.2rem; }
+.testi-text {
+  font-family:var(--font-serif); font-size:1.1rem; font-weight:300;
+  color:var(--off-white); line-height:1.7; margin-bottom:1.5rem; font-style:italic;
+}
+.testi-name {
+  font-size:0.68rem; letter-spacing:3px; text-transform:uppercase; color:var(--gold);
+}
+
+/* ===== CONTACT ===== */
+#contact { background:var(--black); }
+.contact-grid {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:0;
+  margin-top:4rem; border:1px solid rgba(201,168,76,0.1);
+}
+.contact-item {
+  padding:2.5rem 2rem; border-right:1px solid rgba(201,168,76,0.1);
+  transition:0.3s;
+}
+.contact-item:last-child { border-right:none; }
+.contact-item:hover { background:rgba(201,168,76,0.03); }
+.c-label {
+  font-size:0.62rem; letter-spacing:4px; text-transform:uppercase;
+  color:var(--gold); margin-bottom:1rem;
+}
+.c-val {
+  font-family:var(--font-serif); font-size:1.05rem;
+  color:rgba(240,234,216,0.75); line-height:1.8; font-weight:300;
+}
+.c-val a { color:rgba(240,234,216,0.75); text-decoration:none; transition:0.2s; }
+.c-val a:hover { color:var(--gold); }
+
+/* ===== WHATSAPP ===== */
+.whatsapp-float {
+  position:fixed; bottom:2.2rem; right:2.2rem; z-index:999;
+  background:#25D366; color:white;
+  width:56px; height:56px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 6px 28px rgba(37,211,102,0.4);
+  text-decoration:none; transition:0.3s;
+}
+.whatsapp-float:hover { transform:scale(1.1); box-shadow:0 10px 36px rgba(37,211,102,0.55); }
+.whatsapp-float svg { width:26px; height:26px; fill:white; }
+
+/* ===== FOOTER ===== */
+footer {
+  background:var(--black-mid);
+  border-top:1px solid rgba(201,168,76,0.1);
+  padding:2.5rem 5%;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.footer-logo { font-family:var(--font-serif); font-size:1.3rem; color:var(--gold); font-weight:300; letter-spacing:3px; }
+.footer-copy { font-size:0.65rem; color:var(--muted); letter-spacing:2px; }
+.footer-links { display:flex; gap:2.5rem; }
+.footer-links a {
+  font-size:0.65rem; letter-spacing:2px; text-transform:uppercase;
+  color:var(--muted); text-decoration:none; transition:0.2s;
+}
+.footer-links a:hover { color:var(--gold); }
+
+/* ===== MOBILE ===== */
+@media(max-width:900px){
+  nav { padding:1.1rem 1.5rem; }
+  nav.scrolled { padding:0.9rem 1.5rem; }
+  .nav-links { display:none; }
+  #home { grid-template-columns:1fr; padding:7rem 5% 4rem; gap:3rem; }
+  .hero-image img { height:380px; }
+  .hero-image::before { display:none; }
+  section { padding:4.5rem 1.5rem; }
+  .service-cards { grid-template-columns:repeat(2,1fr); }
+  .gallery-grid { grid-template-columns:1fr 1fr; }
+  .gallery-slot.large { min-height:260px; }
+  .booking-grid { grid-template-columns:1fr; gap:3rem; }
+  .testi-grid { grid-template-columns:1fr; }
+  .contact-grid { grid-template-columns:1fr 1fr; }
+  .contact-item { border-right:none; border-bottom:1px solid rgba(201,168,76,0.1); }
+  footer { flex-direction:column; gap:1.2rem; text-align:center; }
+  .cursor, .cursor-ring { display:none; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo">H &amp; C</div>
+  <div class="loader-bar"></div>
+</div>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- ========== NAVBAR ========== -->
+<nav id="navbar">
+  <a href="#home" class="nav-logo">
+    HAIR &amp; CARE
+    <span>BEAUTY SALON · Nagaon</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#booking" class="nav-btn">Book Now</a>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section id="home">
+  <div class="hero-bg-glow"></div>
+  <div class="hero-line-v"></div>
+
+  <div class="reveal">
+    <div class="hero-eyebrow">Luxury Hair &amp; Beauty</div>
+    <h1 class="hero-title">Luxury Beauty<br>With A Soft <em>Touch</em></h1>
+    <p class="hero-desc">
+      Experience elegant salon care, modern styling, glowing skincare,
+      and luxurious beauty services designed to make you feel confident
+      and beautiful every day.
+    </p>
+    <div class="hero-btns">
+      <a href="#booking" class="btn-gold">Reserve Now</a>
+      <a href="#services" class="btn-ghost">Explore Services</a>
+    </div>
+  </div>
+
+  <div class="hero-image reveal">
+    <!-- YOUR SALON IMAGE — keep flower.jpg in same folder, or change filename below -->
+    <img src="./img.jpg" alt="Hair & Care Beauty Salon">
+  </div>
+</section>
+
+<!-- ========== ABOUT ========== -->
+<section id="about">
+  <div class="about-inner reveal">
+    <div class="sec-eyebrow">Our Story</div>
+    <h2 class="sec-title">Beauty With <em>Elegance</em></h2>
+    <p class="about-text">
+      At Hair &amp; Care Beauty Salon, beauty is more than a service —
+      it is an experience of confidence, care, and luxury.
+    </p>
+    <p class="about-text">
+      From hair transformations to flawless makeup and glowing skincare,
+      every treatment is crafted with passion and professionalism,
+      right here in Nagaon, Assam.
+    </p>
+  </div>
+</section>
+
+<!-- ========== SERVICES ========== -->
+<section id="services">
+
+  <div class="services-intro reveal">
+    <div class="sec-eyebrow">What We Offer</div>
+    <h2 class="sec-title">Our <em>Services</em></h2>
+    <p>Every treatment is performed with premium products and expert hands,
+    designed to bring out your most beautiful, confident self.</p>
+  </div>
+
+  <div class="gold-divider"><span>✦</span></div>
+
+  <!-- HAIR -->
+  <div class="cat-block reveal">
+    <div class="cat-label">Hair Services</div>
+    <div class="service-cards">
+      <div class="svc"><div class="svc-icon">💇</div><div class="svc-name">Hair Cut</div><div class="svc-line"></div></div>
+      <div class="svc"><div class="svc-icon">🪡</div><div class="svc-name">Hair Extension</div><div class="svc-line"></div></div>
+      <div class="svc"><div class="svc-icon">🛁</div><div class="svc-name">Hair Spa</div><div class="svc-line"></div></div>
+      <div class="svc"><div class="svc-icon">✨</div><div class="svc-name">Hair Highlights</div><div class="svc-line"></div></div>
+      <div class="svc"><div class="svc-icon">〰️</div><div class="svc-name">Hair Rebonding</div><div class="svc-line"></div></div>
+      <div class="svc"><div class="svc-icon">💈</div><div class="svc-name">Hair Styling</div><div class="svc-line"></div></div>
+      <div class="svc"><div class="svc-icon">👰</div><div class="svc-name">Bridal Hair Do</div><div class="svc-line"></div></div>
+      <div class="svc"><div class="svc-icon">🔆</div><div class="svc-name">Hair Straightening</div><div class="svc-line"></div></div>
+      <div class="svc"><div class="svc-icon">🌀</div><div class="svc-name">Hair Dressing</div><div class="svc-line"></div></div>
+    </div>
+  </div>
+
+  <!-- SKIN -->
+  <div class="cat-block reveal">
+    <div class="cat-label">Skin Care Services</div>
+    <div class="service-cards">
+      <div class="svc"><div class="svc-icon">🧴</div><div class="svc-name">Clean Up</div><div class="svc-line"></div></div>
+      <div class="svc"><div class="svc-icon">☀️</div><div class="svc-name">Tan Removal Facial</div><div class="svc-line"></div></div>
+      <div class="svc"><div class="svc-icon">💆</div><div class="svc-name">Facial</div><div class="svc-line"></div></div>
+    </div>
+  </div>
+
+  <!-- MAKEUP -->
+  <div class="cat-block reveal">
+    <div class="cat-label">Makeup Services</div>
+    <div class="service-cards">
+      <div class="svc"><div class="svc-icon">💄</div><div class="svc-name">Basic Makeup</div><div class="svc-line"></div></div>
+      <div class="svc"><div class="svc-icon">👰‍♀️</div><div class="svc-name">Bridal Makeup</div><div class="svc-line"></div></div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ========== GALLERY ========== -->
+<section id="gallery">
+  <div class="reveal">
+    <div class="sec-eyebrow">Portfolio</div>
+    <h2 class="sec-title">Salon <em>Moments</em></h2>
+  </div>
+  <div class="gallery-grid reveal">
+  <div class="gallery-slot large">
+    <img src="./img2.jpeg" alt="Salon Work 1">
+  </div>
+  <div class="gallery-slot">
+    <img src="./img3.jpeg" alt="Salon Work 2">
+  </div>
+  <div class="gallery-slot">
+    <img src="./img4.jpeg" alt="Salon Work 3">
+  </div>
+  <div class="gallery-slot">
+    <img src="./img5.jpeg" alt="Salon Work 4">
+  </div>
+  <div class="gallery-slot">
+    <img src="./img6.jpeg" alt="Salon Work 5">
+  </div>
+</div>
+  <p class="gallery-note"></p>
+</section>
+
+<!-- ========== BOOKING ========== -->
+<section id="booking">
+  <div class="booking-grid">
+
+    <div class="booking-info reveal">
+      <div class="sec-eyebrow">Reserve Your Visit</div>
+      <h2 class="sec-title">Book An <em>Appointment</em></h2>
+      <p>Our team will contact you shortly to confirm your booking. Walk-ins also welcome based on availability.</p>
+      <div class="hours-block">
+        <div class="hours-label">Working Hours</div>
+        <div class="hours-row">Mon – Sun &nbsp;&nbsp; 10:00 AM – 7:00 PM</div>
+        
+      </div>
+      <div class="map-wrap">
+        <iframe src="https://maps.google.com/maps?q=Hair+And+Care+Unisex+Salon+Nagaon+Assam&output=embed&z=15" allowfullscreen loading="lazy"></iframe>
+      </div>
+    </div>
+
+    <form class="booking-form reveal" id="bookingForm">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" placeholder="Your Name" required>
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="tel" placeholder="+91 88269 41138" required>
+      </div>
+      <div class="form-group">
+        <label>Select Service</label>
+        <select required>
+          <option value="" disabled selected>Choose a service</option>
+          <optgroup label="Hair Services">
+            <option>Hair Cut</option>
+            <option>Hair Extension</option>
+            <option>Hair Spa</option>
+            <option>Hair Highlights</option>
+            <option>Hair Rebonding</option>
+            <option>Hair Styling</option>
+            <option>Bridal Hair Do</option>
+            <option>Hair Straightening</option>
+            <option>Hair Dressing</option>
+          </optgroup>
+          <optgroup label="Skin Care">
+            <option>Clean Up</option>
+            <option>Tan Removal Facial</option>
+            <option>Facial</option>
+          </optgroup>
+          <optgroup label="Makeup">
+            <option>Basic Makeup</option>
+            <option>Bridal Makeup</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Preferred Date</label>
+        <input type="date" required>
+      </div>
+      <div class="form-group">
+        <label>Preferred Time</label>
+        <input type="time" required>
+      </div>
+      <div class="form-group">
+        <label>Special Requests</label>
+        <textarea rows="3" placeholder="Anything you'd like us to know..."></textarea>
+      </div>
+      <button type="submit" class="submit-btn">Request Appointment</button>
+    </form>
+
+  </div>
+</section>
+
+<!-- ========== TESTIMONIALS ========== -->
+<section id="testimonials">
+  <div class="reveal">
+    <div class="sec-eyebrow">Client Reviews</div>
+    <h2 class="sec-title">What They <em>Say</em></h2>
+  </div>
+  <div class="testi-grid reveal">
+    <!-- Edit these reviews or add more -->
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-text">"Best salon in Nagaon — my hair has never looked this good. The team is so professional and caring."</div>
+      <div class="testi-name">Priya S.</div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-text">"Got my bridal makeup done here. Absolutely flawless. Everyone was complimenting me all day!"</div>
+      <div class="testi-name">Ankita D.</div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-text">"The hair spa treatment was so relaxing and my hair feels so soft now. Will definitely come back."</div>
+      <div class="testi-name">Riya B.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CONTACT ========== -->
+<section id="contact">
+  <div class="reveal">
+    <div class="sec-eyebrow">Find Us</div>
+    <h2 class="sec-title">Get In <em>Touch</em></h2>
+  </div>
+  <div class="contact-grid reveal">
+    <div class="contact-item">
+      <div class="c-label">Phone</div>
+      <div class="c-val">
+        <a href="tel:8826941138">8826941138</a><br>
+        <a href="tel:7827688655">7827688655</a>
+      </div>
+    </div>
+    <div class="contact-item">
+      <div class="c-label">WhatsApp</div>
+      <div class="c-val"><a href="https://wa.me/918826941138" target="_blank">+91 88269 41138</a></div>
+    </div>
+    <div class="contact-item">
+      <div class="c-label">Email</div>
+      <div class="c-val"><a href="mailto:aakashbaraik32@gmail.com">aakashbaraik32@gmail.com</a></div>
+    </div>
+    <div class="contact-item">
+      <div class="c-label">Location</div>
+      <div class="c-val">Nagaon, Assam</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== WHATSAPP FLOAT ========== -->
+<a class="whatsapp-float" href="https://wa.me/918826941138" target="_blank" title="Chat on WhatsApp">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  <div class="footer-logo">Hair &amp; Care</div>
+  <div class="footer-copy">© 2026 Hair &amp; Care Beauty Salon — All Rights Reserved</div>
+  <div class="footer-links">
+    <a href="#home">Home</a>
+    <a href="#services">Services</a>
+    <a href="#booking">Book</a>
+  </div>
+</footer>
+
+<!-- ========== SCRIPT ========== -->
+<script>
+
+  // Loader
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('loader').classList.add('hidden');
+    }, 1400);
+  });
+
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // Navbar scroll
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 50);
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 100);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Booking form
+  document.getElementById('bookingForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = this.querySelector('.submit-btn');
+    btn.textContent = 'Request Sent ✓';
+    btn.style.background = '#5a8a60';
+    btn.style.color = '#fff';
+    setTimeout(() => {
+      btn.textContent = 'Request Appointment';
+      btn.style.background = '';
+      btn.style.color = '';
+      this.reset();
+    }, 3000);
+  });
+
+</script>
+</body>
+</html>
