@@ -74,7 +74,7 @@ body {
 /* ===== NAVBAR ===== */
 nav {
   position:fixed; top:0; left:0; width:100%;
-  padding:1.4rem 5%;
+  padding:1.8rem 5%;
   display:flex; justify-content:space-between; align-items:center;
   z-index:1000; transition:0.4s;
 }
@@ -85,14 +85,33 @@ nav.scrolled {
   padding:1rem 5%;
 }
 .nav-logo {
-  font-family:var(--font-serif); font-size:1.5rem; font-weight:300;
-  letter-spacing:3px; color:var(--gold); text-decoration:none; line-height:1.2;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  text-decoration: none;
 }
-.nav-logo span {
-  display:block; font-size:0.55rem; letter-spacing:5px; color:var(--muted);
-  font-family:var(--font-sans); font-weight:300; text-transform:uppercase;
+.nav-logo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
 }
-
+.nav-logo-main {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: 6px;
+  color: var(--gold);
+  line-height: 1;
+}
+.nav-logo-sub {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 300;
+  letter-spacing: 8px;
+  color: var(--off-white);
+  font-style: italic;
+  opacity: 0.75;
+}
 /* Desktop nav links */
 .nav-links { display:flex; gap:2.5rem; list-style:none; }
 .nav-links a {
@@ -513,9 +532,12 @@ footer {
 <!-- ===== NAVBAR ===== -->
 <nav id="navbar">
   <a href="#home" class="nav-logo">
-    HAIR &amp; CARE
-    <span>BEAUTY SALON · Nagaon</span>
-  </a>
+  <img src="./logo.jpeg" alt="Hair & Care Beauty Salon" style="height:110px; width:auto; border-radius:10px;">
+  <div class="nav-logo-text">
+    <span class="nav-logo-main">HAIR & CARE</span>
+    <span class="nav-logo-sub">Beauty Salon</span>
+  </div>
+</a>
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#services">Services</a></li>
@@ -605,8 +627,8 @@ footer {
       <div class="svc"><div class="svc-icon">🧴</div><div class="svc-name">Clean Up</div><div class="svc-line"></div></div>
       <div class="svc"><div class="svc-icon">☀️</div><div class="svc-name">Tan Removal Facial</div><div class="svc-line"></div></div>
       <div class="svc"><div class="svc-icon">💆</div><div class="svc-name">Facial</div><div class="svc-line"></div></div>
+      <div class="svc"><div class="svc-icon">💎</div><div class="svc-name">HydraFacial Treatment</div><div class="svc-line"></div></div>
     </div>
-  </div>
 
   <!-- MAKEUP -->
   <div class="cat-block reveal">
@@ -625,12 +647,38 @@ footer {
     <div class="sec-eyebrow">Portfolio</div>
     <h2 class="sec-title">Salon <em>Moments</em></h2>
   </div>
+  <!-- First 5 photos — always visible -->
   <div class="gallery-grid reveal">
     <div class="gallery-slot large"><img src="./img2.jpeg" alt="Salon Work 1"></div>
     <div class="gallery-slot"><img src="./img3.jpeg" alt="Salon Work 2"></div>
     <div class="gallery-slot"><img src="./img4.jpeg" alt="Salon Work 3"></div>
     <div class="gallery-slot"><img src="./img5.jpeg" alt="Salon Work 4"></div>
     <div class="gallery-slot"><img src="./img6.jpeg" alt="Salon Work 5"></div>
+  </div>
+
+  <!-- Extra photos — hidden until View More is clicked -->
+  <div class="gallery-grid reveal" id="extraPhotos" style="display:none; margin-top:3px;">
+    <div class="gallery-slot"><img src="./img7.jpeg" alt="Salon Work 6"></div>
+    <div class="gallery-slot"><img src="./img8.jpeg" alt="Salon Work 7"></div>
+    <div class="gallery-slot"><img src="./img9.jpeg" alt="Salon Work 8"></div>
+    <div class="gallery-slot"><img src="./img10.jpeg" alt="Salon Work 9"></div>
+    <div class="gallery-slot"><img src="./img11.jpeg" alt="Salon Work 10"></div>
+  </div>
+
+  <!-- View More Button -->
+  <div style="text-align:center; margin-top:2.5rem;">
+    <button id="viewMoreBtn" onclick="toggleGallery()" style="
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 0.85rem 2.5rem;
+      font-family: var(--font-sans);
+      font-size: 0.7rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: 0.3s;
+    ">View More</button>
   </div>
 </section>
 
@@ -753,7 +801,7 @@ footer {
     </div>
     <div class="contact-item">
       <div class="c-label">Location</div>
-      <div class="c-val">Nagaon, Assam</div>
+      <div class="c-val">GNB Rd,Fauzdaripatty,Nagaon, Assam</div>
     </div>
   </div>
 </section>
@@ -767,7 +815,7 @@ footer {
 
 <!-- ===== FOOTER ===== -->
 <footer>
-  <div class="footer-logo">Hair &amp; Care</div>
+  <img src="./logo.jpeg" alt="Hair & Care Beauty Salon" style="height:45px; width:auto; border-radius:8px;">
   <div class="footer-copy">© 2026 Hair &amp; Care Beauty Salon — All Rights Reserved</div>
   <div class="footer-links">
     <a href="#home">Home</a>
@@ -844,6 +892,20 @@ footer {
       this.reset();
     }, 3000);
   });
+
+  // Gallery view more  ← THIS IS THE NEW PART
+  function toggleGallery() {
+    const extra = document.getElementById('extraPhotos');
+    const btn = document.getElementById('viewMoreBtn');
+    if (extra.style.display === 'none') {
+      extra.style.display = 'grid';
+      btn.textContent = 'View Less';
+    } else {
+      extra.style.display = 'none';
+      btn.textContent = 'View More';
+      document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' });
+    }
+  }
 
 </script>
 </body>
